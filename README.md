@@ -36,20 +36,16 @@ Loads Stage-2 generated descriptions and evaluates them with an external judge L
 - Python + PyTorch
 - Hugging Face `transformers`
 - `peft` (LoRA)
-- `unsloth` (used in Stage 1 script) :contentReference[oaicite:16]{index=16}
+- `unsloth` (used in Stage 1 script)
 - Dataset loaders used by the scripts:
   - `interaction_timeseries_loader.py`
-  - `interaction_image_loader.py` :contentReference[oaicite:17]{index=17}
+  - `interaction_image_loader.py` 
 
 > The scripts expect a dataset root and a CSV label file (default examples use `../dataset_v5` and `generated_phri_captions_rebalanced.csv`). 
 
 ---
 
-## How to Run (4 scripts)
-
-Below is a typical **fusion** pipeline example (`Transformer + ResNet18`, 5-fold CV, `K=16` frames).
-
-### 1) Stage 0 — Train encoder(s) + classifier (CV)
+## How to Run 
 ```bash
 # ===== Set one experiment =====
 TASK=fusion
@@ -59,7 +55,7 @@ K_FRAMES=16
 LORA_R=8
 N_PREFIX=8
 SEED=42
-LLM_PATH=/home/toor/jaeseok/language_models/Qwen/Qwen3-8B
+LLM_PATH=/path-to-language_model/language_models/Qwen/Qwen3-8B
 
 STAGE0_ROOT=./stage0_out
 STAGE1_ROOT=./stage1_out
