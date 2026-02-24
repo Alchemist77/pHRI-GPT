@@ -70,4 +70,16 @@ STAGE1_ROOT=./stage1_out
 STAGE2_ROOT=./stage2_out
 STAGE3_ROOT=./stage3_out
 
+python3 stage1_train_cv.py \
+  --task ${TASK} \
+  --ts_backbone ${TS_ENCODER} \
+  --img_backbone ${IMG_ENCODER} \
+  --k_frames ${K_FRAMES} \
+  --llm_path ${LLM_PATH} \
+  --lora_r ${LORA_R} \
+  --n_prefix ${N_PREFIX} \
+  --seed ${SEED} \
+  --stage0_root ${STAGE0_ROOT} \
+  --out_root ${STAGE1_ROOT}
+
 
