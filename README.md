@@ -18,16 +18,16 @@ This repository contains the main cross-validation scripts for the full pipeline
 ## Pipeline Overview (4 stages)
 
 ### Stage 0 — Multimodal representation learning / encoder-only evaluation
-Trains time-series, image, or fusion encoders (`ts`, `img`, `fusion`) with subject-wise cross-validation and saves per-fold checkpoints and metrics. Output includes encoder weights, classifier head, fold splits, and validation metrics. :contentReference[oaicite:9]{index=9} :contentReference[oaicite:10]{index=10}
+Trains time-series, image, or fusion encoders (`ts`, `img`, `fusion`) with subject-wise cross-validation and saves per-fold checkpoints and metrics. Output includes encoder weights, classifier head, fold splits, and validation metrics. 
 
 ### Stage 1 — Latent-to-language alignment (LoRA + projector)
-Loads **frozen Stage-0 encoder(s)**, extracts latent vectors, and trains a projector + LoRA adapter so the LLM can describe the human experience from latent-conditioned prefix embeddings. The prompt template is fixed in code. :contentReference[oaicite:11]{index=11} :contentReference[oaicite:12]{index=12}
+Loads **frozen Stage-0 encoder(s)**, extracts latent vectors, and trains a projector + LoRA adapter so the LLM can describe the human experience from latent-conditioned prefix embeddings. The prompt template is fixed in code. 
 
 ### Stage 2 — Description generation
-Generates one natural English sentence per trial using the Stage-1 adapter/projector and fold-specific Stage-0 encoders. The script injects the latent-conditioned prefix into the prompt and decodes only the generated continuation. :contentReference[oaicite:13]{index=13} :contentReference[oaicite:14]{index=14}
+Generates one natural English sentence per trial using the Stage-1 adapter/projector and fold-specific Stage-0 encoders. The script injects the latent-conditioned prefix into the prompt and decodes only the generated continuation. 
 
 ### Stage 3 — LLM-judge evaluation
-Loads Stage-2 generated descriptions and evaluates them with an external judge LLM (default path in script points to GPT-OSS-20B), producing fold-wise predictions and summary metrics. :contentReference[oaicite:15]{index=15}
+Loads Stage-2 generated descriptions and evaluates them with an external judge LLM (default path in script points to GPT-OSS-20B), producing fold-wise predictions and summary metrics.
 
 ---
 
@@ -36,10 +36,10 @@ Loads Stage-2 generated descriptions and evaluates them with an external judge L
 - Python + PyTorch
 - Hugging Face `transformers`
 - `peft` (LoRA)
-- `unsloth` (used in Stage 1 script) :contentReference[oaicite:16]{index=16}
+- `unsloth` (used in Stage 1 script) 
 - Dataset loaders used by the scripts:
   - `interaction_timeseries_loader.py`
-  - `interaction_image_loader.py` :contentReference[oaicite:17]{index=17}
+  - `interaction_image_loader.py`
 
 > The scripts expect a dataset root and a CSV label file (default examples use `../dataset_v5` and `generated_phri_captions_rebalanced.csv`). 
 
@@ -47,18 +47,27 @@ Loads Stage-2 generated descriptions and evaluates them with an external judge L
 
 ## How to Run (4 scripts)
 
-Below is a typical **fusion** pipeline example (`Transformer + ResNet18`, 5-fold CV, `K=16` frames).
+# ===== Common experiment config =====
+TASK=fusion              # ts | img | fusion | all(stage3 only)
+K_FRAMES=16
+LORA_R=8
+N_PREFIX=8
+SEED=42
 
-### 1) Stage 0 — Train encoder(s) + classifier (CV)
-```bash
-python stage0_train_cv.py \
-  --root ../dataset_v5 \
-  --label_csv ../dataset_v5/generated_phri_captions_rebalanced.csv \
-  --task fusion \
-  --ts_backbone transformer \
-  --img_backbone resnet18 \
-  --k_frames 16 \
-  --kfold 5 \
-  --seed 42 \
-  --latent 256 \
-  --out_root ./stage0_out
+# ===== Backbone choices =====
+TS_ENCODER=transformer   # transformer | gru | lstm
+IMG_ENCODER=resnet18     # resnet18 | vgg16 | vitb16
+
+# ===== LLM (generator for Stage 1/2) =====
+LLM_PATH=/home/toor/jaeseok/language_models/Qwen/Qwen3-4B
+# examples:
+# /home/toor/jaeseok/language_models/Qwen/Qwen3-8B
+# /home/toor/jaeseok/language_models/DeepSeek-R1-Distill-Qwen-7B
+
+# ===== Output roots =====
+STAGE0_ROOT=./stage0_out
+STAGE1_ROOT=./stage1_out
+STAGE2_ROOT=./stage2_out
+STAGE3_ROOT=./stage3_out
+
+
