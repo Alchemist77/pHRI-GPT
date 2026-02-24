@@ -41,7 +41,7 @@ Loads Stage-2 generated descriptions and evaluates them with an external judge L
   - `interaction_timeseries_loader.py`
   - `interaction_image_loader.py` 
 
-> The scripts expect a dataset root and a CSV label file (default examples use `../dataset_v5` and `generated_phri_captions_rebalanced.csv`). 
+> The scripts expect a dataset root and a CSV label file (default examples use `../dataset` and `generated_phri_captions_rebalanced.csv`, only label data will be uploaded after publishcation ). 
 
 ---
 
